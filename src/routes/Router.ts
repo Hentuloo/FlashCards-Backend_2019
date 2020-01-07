@@ -6,6 +6,12 @@ export class RootRouter {
   static getRouter() {
     if (!this.instance) {
       this.instance = Router();
+      this.instance.use(function(req, res, next) {
+        if (req.params && req.params.id && typeof req.params.id === "string") {
+          let num = Number(req.params.id);
+        }
+        next();
+      });
     }
     return this.instance;
   }

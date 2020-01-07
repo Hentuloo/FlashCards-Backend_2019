@@ -46,7 +46,7 @@ export const validSimpleValue = (item: { [key: string]: any }) => {
     case "id":
     case "idType":
     case "idWord": {
-      if (value) {
+      if (!value) {
         return {
           error: "Data is incomplete",
           status: "id is empty",

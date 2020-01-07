@@ -1,9 +1,29 @@
-import * as mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import { PassportLocalSchema } from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 
-const Schema = mongoose.Schema;
+export interface UserSchemaType {
+  id: any;
+  title: string;
+  icon: string;
+  cards: [
+    {
+      word: string;
+      description: string;
+      order: number;
+    }
+  ];
+}
+
+export interface UserSchema extends Document {
+  id: any;
+  email: string;
+  numberOfTypes: number;
+  numberOfCards: number;
+  types: UserSchemaType[];
+}
+
 const userSchema = new Schema(
   {
     email: {
@@ -66,4 +86,7 @@ const userSchema = new Schema(
 userSchema.plugin(passportLocalMongoose, { usernameField: "email" });
 userSchema.plugin(uniqueValidator, { type: "mongoose-unique-validator" });
 
-export default mongoose.model("User", userSchema as PassportLocalSchema);
+export default mongoose.model<UserSchema>(
+  "User",
+  userSchema as PassportLocalSchema
+);

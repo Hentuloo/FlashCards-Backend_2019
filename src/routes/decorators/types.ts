@@ -8,5 +8,6 @@ export enum Methods {
 export enum Metadata {
   route,
   valid,
-  middleware
+  middleware,
+  globalMiddleware
 }

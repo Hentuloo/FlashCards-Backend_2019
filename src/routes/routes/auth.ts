@@ -1,33 +1,37 @@
 import { Request, Response, NextFunction } from "express";
-
-import { controller, post, del, valid, use } from "../decorators";
 import env from "env";
+import { jwtAuthLocal, RequestWithUser } from "middleware/jwtAuth";
+import { controller, post, del, valid, use } from "../decorators";
 import { defaultTypes } from "models/defaultTypes";
 import User from "models/user";
-import { jwtAuth, jwtAuthLocal } from "middleware/jwtAuth";
 import jwt from "jsonwebtoken";
 
-export type RequestWithUser = Request & { user: { id: any } };
+export enum CardsRoutes {
+  prefix = "/auth",
+  postNewUser = "/new",
+  deleteUser = "/delete",
+  getloginToken = "/login"
+}
 
-@controller("/auth")
+@controller(CardsRoutes.prefix)
 export class Auth {
-  @post("/new")
+  @post(CardsRoutes.postNewUser)
   @valid("email", "password")
   postNewUser(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;
-    const user = new User({ email, defaultTypes });
+    const user = new User({ email, types: defaultTypes });
     User.register(user, password, err => {
       if (err) next(err);
       res.send({ status: "success" });
     });
   }
 
-  @del("/delete")
+  @del(CardsRoutes.deleteUser)
   @valid("email")
-  @use(jwtAuth)
+  @use(jwtAuthLocal)
   deleteUser(req: RequestWithUser, res: Response, next: NextFunction) {
-    const { email } = req.body;
-    User.findOneAndRemove({ _id: req.user.id, email }, (err, deletedUser) => {
+    const { email, id } = req.user;
+    User.findOneAndRemove({ _id: id, email }, (err, deletedUser) => {
       if (err) return next(err);
 
       if (!deletedUser)
@@ -43,15 +47,14 @@ export class Auth {
     });
   }
 
-  @post("/login")
+  @post(CardsRoutes.getloginToken)
   @valid("email", "password")
   @use(jwtAuthLocal)
-  err(req: RequestWithUser, res: Response, next: NextFunction): void {
+  getloginToken(req: RequestWithUser, res: Response, next: NextFunction): void {
     const { id } = req.user;
     const token = jwt.sign({ id }, env.JWT_KEY, {
       expiresIn: 60000
     });
     res.send(token);
-    return;
   }
 }
