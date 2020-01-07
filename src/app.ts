@@ -15,12 +15,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: ["https://www.megafiszka.eu"]
+    origin: ["http://localhost:3000"]
+    // origin: ["https://www.megafiszka.eu"]
   })
 );
 app.use(RootRouter.getRouter());
 app.use(ErrorHandling);
 
-app.listen(env.PORT, function() {
+app.listen(process.env.PORT || 3000, function() {
   console.log(`app running on port ${env.PORT}`);
 });
