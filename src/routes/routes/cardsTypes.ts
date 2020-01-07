@@ -142,7 +142,7 @@ export class CardsTypes {
     );
   }
 
-  @get(CardsTypesRoutes.getSingleType)
+  @post(CardsTypesRoutes.getSingleType)
   @valid("id")
   getSingleType(req: RequestWithUser, res: Response, next: NextFunction) {
     const { types } = req.user;
