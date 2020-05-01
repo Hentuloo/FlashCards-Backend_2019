@@ -1,4 +1,4 @@
-# Back-end for https://megafiszka.eu
+# Back-end for http://flashcards-app123.s3-website.eu-central-1.amazonaws.com
 
 GitRepo: https://github.com/Hentuloo/FlashCards_2019
 
